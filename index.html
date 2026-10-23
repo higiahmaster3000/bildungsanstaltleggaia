@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bildungsanstalt Deuschle</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --danger-color: #ef4444;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --border-color: #334155;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+        }
+        header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #60a5fa;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .nav-btns {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        button:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button.secondary {
+            background-color: #475569;
+        }
+        button.secondary:hover {
+            background-color: #64748b;
+        }
+        button.danger {
+            background-color: var(--danger-color);
+        }
+        button.danger:hover {
+            background-color: #dc2626;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: #93c5fd;
+        }
+        p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .menu-card {
+            background-color: #0f172a;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .menu-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+        .menu-card h3 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .timetable-builder {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 5px;
+        }
+        .slot-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            background: #0f172a;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        /* HUD & Game Area */
+        .game-hud {
+            display: flex;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+        .timer-box {
+            font-size: 1.2rem;
+            color: var(--warning-color);
+        }
+        .teacher-dialogue-box {
+            background: #0f172a;
+            border-left: 5px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 20px;
+            font-style: italic;
+            position: relative;
+        }
+        .teacher-name-tag {
+            font-weight: bold;
+            color: #60a5fa;
+            font-style: normal;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .action-btn {
+            background-color: #334155;
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            text-align: center;
+        }
+        .action-btn:hover:not(:disabled) {
+            background-color: #475569;
+            border-color: var(--accent-color);
+        }
+        .action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .status-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .bar-container {
+            width: 100%;
+            background: #334155;
+            border-radius: 6px;
+            height: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        .bar-fill {
+            height: 100%;
+            width: 50%;
+            background: var(--success-color);
+            transition: width 0.3s ease;
+        }
+        .bar-label {
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+        }
+        /* Modal Popups */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid var(--border-color);
+            text-align: center;
+            box-shadow: 0 20px 25px rgba(0,0,0,0.5);
+        }
+        /* Persistent Timetable Sidebar / Drawer */
+        #persistent-timetable {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            padding: 15px;
+            border-radius: 12px;
+            width: 280px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 500;
+            display: none;
+        }
+        #persistent-timetable h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tt-list-item {
+            font-size: 0.85rem;
+            padding: 4px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+        }
+        /* Teachers Info List */
+        .teacher-info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .teacher-card {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+        .teacher-card h4 {
+            color: #60a5fa;
+            margin-bottom: 4px;
+        }
+        .teacher-card p {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bildungsanstalt Deuschle</h1>
+        <div class="nav-btns">
+            <button class="secondary" onclick="toggleTimetableDrawer()">Stundenplan</button>
+            <button class="secondary" onclick="openModal('teachers-modal')">Lehrer & Fähigkeiten</button>
+            <button class="secondary" onclick="openModal('patchnotes-modal')">Patchnotes</button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- 1. HAUPTMENÜ -->
+        <div id="screen-menu" class="screen active">
+            <h2>Hauptmenü</h2>
+            <p>Wähle deinen Spielmodus an der härtesten Bildungseinrichtung des Landes!</p>
+            <div class="menu-grid">
+                <div class="menu-card" onclick="goToModeSelect(1)">
+                    <h3>Modus 1</h3>
+                    <p>Freie Unterrichtsauswahl<br>Spiele einen einzelnen Schultag (1–6 Stunden) durch.</p>
+                </div>
+                <div class="menu-card" onclick="goToModeSelect(2)">
+                    <h3>Modus 2</h3>
+                    <p>Freier Stundenplan<br>Spiele eine ganze Woche (Mo-Fr) mit Ausfällen & Vertretungen!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. MODUS KONFIGURATION -->
+        <div id="screen-config" class="screen">
+            <h2 id="config-title">Konfiguration</h2>
+            <div class="form-group">
+                <label>Generierungs-Art:</label>
+                <select id="gen-type" onchange="toggleBuilderMode()">
+                    <option value="self">Selber zusammenstellen</option>
+                    <option value="random">Zufällig generieren</option>
+                </select>
+            </div>
+            <div class="form-group" id="hours-count-group">
+                <label>Anzahl der Stunden pro Tag (1-6):</label>
+                <input type="number" id="hours-count" min="1" max="6" value="4" onchange="updateBuilderRows()">
+            </div>
+            <div class="form-group" id="duration-group">
+                <label>Stunden-Dauer:</label>
+                <select id="lesson-duration">
+                    <option value="60">60 Sekunden</option>
+                    <option value="90">90 Sekunden</option>
+                    <option value="120">120 Sekunden</option>
+                </select>
+            </div>
+            <div class="form-group" id="exams-toggle-group">
+                <label>Wöchentliche Klassenarbeiten (Modus 2):</label>
+                <select id="enable-exams">
+                    <option value="yes">Aktiviert</option>
+                    <option value="no">Deaktiviert</option>
+                </select>
+            </div>
+
+            <div id="manual-builder-container" style="display:none;">
+                <label>Stundenplan manuell definieren:</label>
+                <div class="timetable-builder" id="builder-rows-box"></div>
+            </div>
+
+            <button onclick="startGameSession()">Schultag / Woche starten!</button>
+            <button class="secondary" onclick="showScreen('screen-menu')">Zurück</button>
+        </div>
+
+        <!-- 3. VOR-STUDEN-POPUP / SCREEN -->
+        <div id="screen-pre-lesson" class="screen">
+            <h2 id="pre-lesson-title">Nächste Stunde</h2>
+            <div class="teacher-dialogue-box" style="font-style: normal; font-size: 1.1rem;" id="pre-lesson-text">
+                Sie haben jetzt Deutsch (D) bei Herr Deuschle (DEU)!
+            </div>
+            <p>Was möchtest du tun?</p>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="danger" onclick="skipLesson()">Schwänzen (50% Risiko auf Suspendierung für den Rest des Tages + 6 in der Stunde)</button>
+                <button onclick="startActualLesson()">Stunde starten</button>
+            </div>
+        </div>
+
+        <!-- 4. AKTIVER UNTERRICHT -->
+        <div id="screen-lesson" class="screen">
+            <div class="game-hud">
+                <div id="hud-subject">Fach: Deutsch (D)</div>
+                <div id="hud-teacher">Lehrer: Herr Deuschle (DEU)</div>
+                <div class="timer-box" id="hud-timer">Zeit: 60s</div>
+            </div>
+
+            <div class="status-bars">
+                <div>
+                    <div class="bar-label"><span>Aufmerksamkeit / Beitrags-Qualität</span><span id="quality-val">50%</span></div>
+                    <div class="bar-container"><div class="bar-fill" id="bar-quality" style="width: 50%; background: var(--accent-color);"></div></div>
+                </div>
+            </div>
+
+            <div class="teacher-dialogue-box">
+                <span class="teacher-name-tag" id="active-teacher-tag">Herr Deuschle (DEU)</span>
+                <span id="active-teacher-speech">"Herzlich willkommen zur Stunde, wir fangen gleich an."</span>
+            </div>
+
+            <p style="font-size: 0.9rem; margin-bottom: 8px;">Aktionen wählen (Coole Down beachten!):</p>
+            <div class="actions-grid">
+                <button class="action-btn" id="act-listen" onclick="doAction('listen')">Zuordnen / Zuhören</button>
+                <button class="action-btn" id="act-task" onclick="doAction('task')">Aufgaben machen</button>
+                <button class="action-btn" id="act-ref" onclick="doAction('ref')">Freiwillig Referat</button>
+                <button class="action-btn" id="act-discuss" onclick="doAction('discuss')">Diskutieren</button>
+                <button class="action-btn" id="act-paper" onclick="doAction('paper')">Papierkugeln schmeißen</button>
+                <button class="action-btn" id="act-plane" onclick="doAction('plane')">Papierflieger basteln</button>
+                <button class="action-btn" id="act-phone" onclick="doAction('phone')">Handy rausholen / Spickzettel</button>
+                <button class="action-btn" id="act-chatty" onclick="doAction('chatty')">Chatty fragen (KI)</button>
+                <button class="action-btn" id="act-neighbor" onclick="doAction('neighbor')">Mit Nachbarn reden</button>
+                <button class="action-btn" id="act-handup" onclick="doAction('handup')">Aufzeigen</button>
+                <button class="action-btn" id="act-board" onclick="doAction('board')">An die Tafel & Scheiße bauen</button>
+                <button class="action-btn" id="act-music" onclick="doAction('music')">Schulklingel & Mukke an</button>
+                <button class="action-btn" id="act-questions" onclick="doAction('questions')">Fragen stellen</button>
+            </div>
+            <button class="secondary" style="width: 100%; margin-top: 10px;" onclick="forceFinishLesson()">Stunde überspringen / Beenden</button>
+        </div>
+
+        <!-- 5. ZEUGNIS / AUSWERTUNG -->
+        <div id="screen-report" class="screen">
+            <h2>Zeugnis & Auswertung</h2>
+            <div id="report-content" style="margin-bottom: 20px;"></div>
+            <button onclick="location.reload()">Zurück zum Hauptmenü</button>
+        </div>
+
+    </div>
+
+    <!-- PERSISTENTER STUNDENPLAN DRAWER -->
+    <div id="persistent-timetable">
+        <h4>Stundenplan <span style="cursor:pointer;" onclick="toggleTimetableDrawer()">[X]</span></h4>
+        <div id="persistent-timetable-body">Kein aktiver Plan.</div>
+    </div>
+
+    <!-- MODAL: LEHRER & FÄHIGKEITEN -->
+    <div class="modal-overlay" id="teachers-modal">
+        <div class="modal-content" style="max-width: 650px;">
+            <h2>Lehrer & Fähigkeiten</h2>
+            <div class="teacher-info-grid" id="teacher-info-list"></div>
+            <br>
+            <button class="secondary" onclick="closeModal('teachers-modal')">Schließen</button>
+        </div>
+    </div>
+
+    <!-- MODAL: PATCHNOTES -->
+    <div class="modal-overlay" id="patchnotes-modal">
+        <div class="modal-content">
+            <h2>Patchnotes (Update 3.5)</h2>
+            <p style="text-align: left; font-size: 0.9rem; max-height: 300px; overflow-y: auto;">
+                • Alle 22 Lehrer mit exakten Spezialfähigkeiten, Art & Notengebung.<br>
+                • Das absolute "Du"-Prinzip implementiert.<br>
+                • Herr Deuschle schickt dich nie zu sich selbst, Jartwig hat 5% Deuschle-Chance, Senfbosch 5% Chance auf 6.<br>
+                • 4 neue Aktivitäten: Nachbar reden, Aufzeigen, Digitale Tafel-Chaos, Schulklingel-Mukke.<br>
+                • Sichtbarer Beitrags-Qualitätsbalken & Mid-Lesson Pop-up-Quizfragen.<br>
+                • Chatty-KI-Hilfe mit Erwisch- & Lautsprecher-Risiko.<br>
+                • Wöchentliche Klassenarbeiten & Special Events (Feueralarm, Draußen, Kahoot).<br>
+                • Vor-der-Tür-Schicken & permanenter Stundenplan-Zugriff.<br>
+                • Hotfix: Manueller Stundenplan-Zusammenstellung funktioniert fehlerfrei, Aktivität "Fragen" wiederhergestellt.
+            </p>
+            <br>
+            <button class="secondary" onclick="closeModal('patchnotes-modal')">Schließen</button>
+        </div>
+    </div>
+
+    <!-- MODAL: QUIZ / MID-LESSON FRAGE -->
+    <div class="modal-overlay" id="quiz-modal">
+        <div class="modal-content">
+            <h3 id="quiz-title" style="color:var(--warning-color); margin-bottom: 15px;">Lehrer-Zwischenfrage!</h3>
+            <p id="quiz-question-text" style="margin-bottom: 15px;"></p>
+            <div id="quiz-options" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: DEUSCHLE BÜRO ODER VOR DER TÜR EVENT -->
+    <div class="modal-overlay" id="event-modal">
+        <div class="modal-content">
+            <h3 id="event-modal-title" style="color:var(--danger-color); margin-bottom: 15px;">Ereignis!</h3>
+            <p id="event-modal-text" style="margin-bottom: 20px;"></p>
+            <button onclick="closeEventModal()">Verstanden</button>
+        </div>
+    </div>
+
+    <script>
+        // DATENBASIS
+        const subjectsList = [
+            { name: "Deutsch", code: "D" }, { name: "Mathematik", code: "M" }, { name: "Englisch", code: "E" },
+            { name: "Französisch", code: "F" }, { name: "Latein", code: "L" }, { name: "Spanisch", code: "S" },
+            { name: "Chemie", code: "CH" }, { name: "Biologie", code: "BI" }, { name: "Physik", code: "PH" },
+            { name: "Erdkunde", code: "EK" }, { name: "Geschichte", code: "GE" }, { name: "Pädagogik", code: "PÄ" },
+            { name: "Politik", code: "PK" }, { name: "Literatur", code: "LI" }, { name: "Religion", code: "R" },
+            { name: "Sport", code: "SP" }, { name: "Kunst", 
